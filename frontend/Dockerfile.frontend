@@ -1,0 +1,27 @@
+# Build stage
+FROM rust:1.86 as builder
+
+# Install trunk and wasm target
+RUN cargo install --locked trunk
+RUN rustup target add wasm32-unknown-unknown
+
+WORKDIR /app
+
+# Copy Cargo configuration files and build dependencies
+COPY Cargo.toml ./
+RUN mkdir src && echo "fn main() {}" > src/main.rs
+ENV RUSTFLAGS="-C target-feature=-reference-types"
+RUN cargo build --target wasm32-unknown-unknown --release
+
+# Copy the actual sources and build
+COPY src/ ./src/
+COPY index.html ./
+COPY Trunk.toml ./
+RUN trunk build --release
+
+# Serve stage
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+# Custom Nginx configuration to support routing/proxying if needed, standard is fine for CSR
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

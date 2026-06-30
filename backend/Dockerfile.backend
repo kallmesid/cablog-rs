@@ -1,0 +1,15 @@
+FROM node:20-slim
+
+# Install system dependencies needed for DuckDB compilation if needed (usually has prebuilds)
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+EXPOSE 8095
+CMD ["npm", "start"]

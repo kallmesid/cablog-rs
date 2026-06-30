@@ -1,0 +1,6 @@
+{
+  "name": "Cab Logger",
+  "description": "Internal cab booking and dispatch logging system for employees and vendors.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8095:8095"
+    environment:
+      - PORT=8095
+      - NODE_ENV=development
+    volumes:
+      - ./backend/data:/app/data:z
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8090:80"
+    depends_on:
+      - backend
+    restart: always
